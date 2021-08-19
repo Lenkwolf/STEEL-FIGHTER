@@ -110,8 +110,8 @@ class Grunt(arcade.Sprite):
 
     def __init__(self,x,y):
         super().__init__("enemy cutout.png")
-        self.center_x = 700
-        self.center_y = 288
+        self.center_x = x
+        self.center_y = y
         self.cur_texture = 0
         self.character_face_direction = LEFT_FACING
         self.scale = SPRITE_SCALING_ENEMY
@@ -144,7 +144,7 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         
-        enemy = Grunt(700, 200)
+        enemy = Grunt(700, 288)
         self.enemy_list.append(enemy)
     
 
