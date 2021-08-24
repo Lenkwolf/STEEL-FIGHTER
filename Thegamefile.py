@@ -173,6 +173,7 @@ class MyGame(arcade.Window):
 
         self.background = arcade.load_texture("background.png")
 
+        self.dielol = arcade.load_texture("SAD.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                         self.wall_list,
@@ -182,9 +183,10 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
 
+        
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-
-
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0] +700,-500 ,200, 100, self.dielol)
+        arcade.draw_text("YOU DIED!!",self.get_viewport()[0]+350, -500, arcade.color.WHITE, 60)
 
 
         self.wall_list.draw()
@@ -200,8 +202,8 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED 
         elif symbol == arcade.key.W:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            #if self.physics_engine.can_jump():
+            self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif symbol == arcade.key.O:
             self.player_sprite.center_x = 300
             self.player_sprite.center_y = 300
