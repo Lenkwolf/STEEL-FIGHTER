@@ -201,7 +201,7 @@ class MyGame(arcade.Window):
             self.player_sprite.change_x = -MOVEMENT_SPEED 
         elif symbol == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED 
-        elif symbol == arcade.key.W:
+        elif symbol == arcade.key.SPACE:
             #if self.physics_engine.can_jump():
             self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif symbol == arcade.key.O:
