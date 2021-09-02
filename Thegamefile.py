@@ -43,8 +43,8 @@ class PlayerCharacter(arcade.Sprite):
 
 
 
-        self.fall_texture_pair = load_texture_pair("SnekFall.png")
-
+        self.fall_texture_pair = load_texture_pair("RexFall.png")
+        self.jump_texture_pair = load_texture_pair("RexJump.png")
         # Load textures for idling
         self.idle_textures = []
         for i in range(8):
@@ -74,9 +74,10 @@ class PlayerCharacter(arcade.Sprite):
                
 
             
-            if self.change_y != 0 and not self.is_on_ladder:
+            if self.change_y < 0 and not self.is_on_ladder:
                 self.texture = self.fall_texture_pair[self.character_face_direction]
-            
+            elif self.change_y > 0 and not self.is_on_ladder:
+                self.texture = self.jump_texture_pair[self.character_face_direction]           
             
             # Idle animation
             elif self.change_x == 0:
