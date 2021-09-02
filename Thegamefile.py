@@ -15,13 +15,12 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 
 def load_texture_pair(filename):
-
-
      return [
          arcade.load_texture(filename),
          arcade.load_texture(filename, flipped_horizontally=True)]
 
 class PlayerCharacter(arcade.Sprite):
+    
     """ Player Sprite"""
     def __init__(self):
         # Set up parent class
@@ -61,23 +60,20 @@ class PlayerCharacter(arcade.Sprite):
 
         # Set the initial texture
         self.texture = self.idle_textures[0][0]
-        
-
-
     def update_animation(self, delta_time: float = 1/60):
+
+            
+            #left and right
             if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
                 self.character_face_direction = LEFT_FACING
             elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
                 self.character_face_direction = RIGHT_FACING
 
-
-               
-
-            
+            #fall and jump
             if self.change_y < 0 and not self.is_on_ladder:
                 self.texture = self.fall_texture_pair[self.character_face_direction]
             elif self.change_y > 0 and not self.is_on_ladder:
-                self.texture = self.jump_texture_pair[self.character_face_direction]           
+                self.texture = self.jump_texture_pair[self.character_face_direction] 
             
             # Idle animation
             elif self.change_x == 0:
@@ -203,8 +199,8 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED 
         elif symbol == arcade.key.SPACE:
-            #if self.physics_engine.can_jump():
-            self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            if self.physics_engine.can_jump():
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif symbol == arcade.key.O:
             self.player_sprite.center_x = 300
             self.player_sprite.center_y = 300
