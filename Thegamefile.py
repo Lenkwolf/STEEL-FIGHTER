@@ -42,7 +42,7 @@ class PlayerCharacter(arcade.Sprite):
         self.is_on_ladder = False
 
 
-        self.jump_texture_pair = load_texture_pair("SnekJump.png")
+
         self.fall_texture_pair = load_texture_pair("SnekFall.png")
 
         # Load textures for idling
