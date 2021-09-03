@@ -2,6 +2,7 @@ import arcade
 import random
 
 SPRITE_SCALING_PLAYER = 0.4
+TILE_SCALING = 3.9
 SPRITE_SCALING_ENEMY = 0.4
 SPRITE_SCALING_COIN = 0.5
 COIN_COUNT = 0
@@ -121,8 +122,6 @@ class MyGame(arcade.Window):
 
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
 
-        
-
         self.player_list = None
         self.wall_list = None
         self.physics_engine = None
@@ -133,6 +132,20 @@ class MyGame(arcade.Window):
 
     def setup(self):
         
+
+
+        map_name = ":resources:tmx_maps/map.tmx"
+
+        platforms_layer_name = 'Tile Layer 1'
+
+        my_map = arcade.tilemap.read_tmx("1st map.tmx")
+
+
+        self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
+                                                     layer_name=platforms_layer_name,
+                                                     scaling=TILE_SCALING,
+                                                     use_spatial_hash=True)
+
         self.player_list = arcade.SpriteList()
         self.player_sprite = PlayerCharacter()
         self.player_list.append(self.player_sprite)
@@ -143,27 +156,7 @@ class MyGame(arcade.Window):
         self.enemy_list.append(enemy)
     
 
-        self.wall_list = arcade.SpriteList()
-        wall = arcade.Sprite("dev tex 1.png", SPRITE_SCALING_BOX)
-        wall.center_x = 300
-        wall.center_y = 200
-        self.wall_list.append(wall)
 
-
-        wall = arcade.Sprite("dev tex 1.png", SPRITE_SCALING_BOX)
-        wall.center_x = 348
-        wall.center_y = 200
-        self.wall_list.append(wall)
-
-        wall = arcade.Sprite("dev tex 1.png", SPRITE_SCALING_BOX)
-        wall.center_x = 396
-        wall.center_y = 200
-        self.wall_list.append(wall)
-
-        wall = arcade.Sprite("dev tex 1.png", SPRITE_SCALING_BOX)
-        wall.center_x = 700
-        wall.center_y = 200
-        self.wall_list.append(wall)
 
 
         self.background = arcade.load_texture("background.png")
@@ -197,8 +190,8 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.D:
             self.player_sprite.change_x = MOVEMENT_SPEED 
         elif symbol == arcade.key.SPACE:
-            if self.physics_engine.can_jump():
-                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+            #if self.physics_engine.can_jump():
+            self.player_sprite.change_y = PLAYER_JUMP_SPEED
         elif symbol == arcade.key.O:
             self.player_sprite.center_x = 300
             self.player_sprite.center_y = 300
