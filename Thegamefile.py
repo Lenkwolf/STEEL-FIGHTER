@@ -68,12 +68,10 @@ class PlayerCharacter(arcade.Sprite):
                 self.character_face_direction = LEFT_FACING
             elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
                 self.character_face_direction = RIGHT_FACING
-
-            #fall and jump
-            if self.change_y < 0 and not self.is_on_ladder:
-                self.texture = self.fall_texture_pair[self.character_face_direction]
-            elif self.change_y > 0 and not self.is_on_ladder:
-                self.texture = self.jump_texture_pair[self.character_face_direction] 
+            
+            #falling 
+            elif self.change_y < 0 and not self.is_on_ladder:
+                self.texture = self.fall_texture_pair[self.character_face_direction] 
             
             # Idle animation
             elif self.change_x == 0:
