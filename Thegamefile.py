@@ -1,6 +1,8 @@
 import arcade
 import random
 
+from arcade.application import MOUSE_BUTTON_LEFT
+
 SPRITE_SCALING_PLAYER = 0.4
 TILE_SCALING = 0.4
 SPRITE_SCALING_ENEMY = 0.4
@@ -26,8 +28,8 @@ class PlayerCharacter(arcade.Sprite):
     def __init__(self):
         # Set up parent class
         super().__init__()
-        self.center_x = 300
-        self.center_y = 300
+        self.center_x = 735
+        self.center_y = 384
 
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
@@ -55,7 +57,7 @@ class PlayerCharacter(arcade.Sprite):
         # load textures for walking
         self.walk_textures = []
         for i in range(6):
-            for j in range(4):
+            for j in range(2):
                 texture = load_texture_pair(f"./Run/Run_{i}.png")
                 self.walk_textures.append(texture)
 
@@ -120,7 +122,7 @@ class MyGame(arcade.Window):
 
     def __init__(self):
 
-        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "Sprite Example")
+        super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "STEEL FIGHTER")
 
         self.player_list = None
         self.wall_list = None
@@ -152,7 +154,7 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
 
         
-        enemy = Grunt(700, 288)
+        enemy = Grunt(3075, 448)
         self.enemy_list.append(enemy)
     
 
@@ -161,7 +163,7 @@ class MyGame(arcade.Window):
 
         self.background = arcade.load_texture("background.png")
 
-        self.dielol = arcade.load_texture("SAD.png")
+        self.Foreground = arcade.load_texture("Foreground.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                         self.wall_list,
@@ -173,8 +175,8 @@ class MyGame(arcade.Window):
 
         
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0] +700,-500 ,200, 100, self.dielol)
-        arcade.draw_text("YOU DIED!!",self.get_viewport()[0]+350, -500, arcade.color.WHITE, 60)
+        
+
 
 
         self.wall_list.draw()
@@ -182,7 +184,8 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.player_list.draw()
 
-        arcade.draw_text("Test area", 550, 600, arcade.color.BLACK, 50)
+        arcade.draw_text("STEEL FIGHTER", 550, 600, arcade.color.GRAY, 50)
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == arcade.key.A:
@@ -195,6 +198,11 @@ class MyGame(arcade.Window):
         elif symbol == arcade.key.O:
             self.player_sprite.center_x = 300
             self.player_sprite.center_y = 300
+
+
+    def on_mouse_press(self, x,y,button, modifiers):
+        if button == MOUSE_BUTTON_LEFT:
+            print(self.get_viewport()[0]+x , self.get_viewport()[2]+y)
 
     def on_key_release(self, symbol, modifiers):
         if symbol == arcade.key.A or symbol == arcade.key.D:
