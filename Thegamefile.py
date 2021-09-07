@@ -164,6 +164,8 @@ class MyGame(arcade.Window):
         self.background = arcade.load_texture("background.png")
 
         self.Foreground = arcade.load_texture("Foreground.png")
+        
+        self.logo = arcade.load_texture("LOGO.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                         self.wall_list,
@@ -184,7 +186,7 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.player_list.draw()
 
-        arcade.draw_text("STEEL FIGHTER", 550, 600, arcade.color.GRAY, 50)
+        arcade.draw_lrwh_rectangle_textured(500, 550, 500, 100, self.logo)
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
 
     def on_key_press(self, symbol, modifiers):
