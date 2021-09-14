@@ -46,7 +46,6 @@ class PlayerCharacter(arcade.Sprite):
 
 
         self.fall_texture_pair = load_texture_pair("RexFall.png")
-        self.jump_texture_pair = load_texture_pair("RexJump.png")
         # Load textures for idling
         self.idle_textures = []
         for i in range(8):
@@ -99,8 +98,8 @@ class PlayerCharacter(arcade.Sprite):
             self.center_y += self.change_y
 
             if self.bottom < -400:
-                self.center_x = 300
-                self.center_y = 300
+                self.center_x = 735
+                self.center_y = 384
 
             self.update_animation()
 
@@ -128,7 +127,11 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.physics_engine = None
         self.player_sprite = None
-
+        self.left_pressed = False
+        self.right_pressed = False
+        self.up_pressed = False
+        self.down_pressed = False
+        self.jump_needs_reset = False
 
         self.set_mouse_visible(True)
 
@@ -189,26 +192,51 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(500, 550, 500, 100, self.logo)
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
 
-    def on_key_press(self, symbol, modifiers):
-        if symbol == arcade.key.A:
-            self.player_sprite.change_x = -MOVEMENT_SPEED 
-        elif symbol == arcade.key.D:
-            self.player_sprite.change_x = MOVEMENT_SPEED 
-        elif symbol == arcade.key.SPACE:
-            #if self.physics_engine.can_jump():
-            self.player_sprite.change_y = PLAYER_JUMP_SPEED
-        elif symbol == arcade.key.O:
-            self.player_sprite.center_x = 300
-            self.player_sprite.center_y = 300
+    def process_keychange(self):
+ 
+        if self.up_pressed and not self.down_pressed:
+            if self.physics_engine.is_on_ladder():
+                self.player_sprite.change_y = MOVEMENT_SPEED
+            elif (
+                self.physics_engine.can_jump(y_distance=10)
+                and not self.jump_needs_reset
+            ):
+                self.player_sprite.change_y = PLAYER_JUMP_SPEED
+                self.jump_needs_reset = True
+
+
+            # Process left/right
+        if self.right_pressed and not self.left_pressed:
+           self.player_sprite.change_x = MOVEMENT_SPEED
+        elif self.left_pressed and not self.right_pressed:
+            self.player_sprite.change_x = -MOVEMENT_SPEED
+        else:
+            self.player_sprite.change_x = 0
+
+    def on_key_press(self, key, modifiers):
+        if key == arcade.key.SPACE:
+            self.up_pressed = True
+        elif key == arcade.key.A:
+            self.left_pressed = True
+        elif key == arcade.key.D:
+            self.right_pressed = True
+        self.process_keychange()
+
+    def on_key_release(self, key, modifiers):
+        if key == arcade.key.SPACE:
+            self.up_pressed = False
+            self.jump_needs_reset = False
+        elif key == arcade.key.A:
+            self.left_pressed = False
+        elif key == arcade.key.D:
+            self.right_pressed = False
+        self.process_keychange()
 
 
     def on_mouse_press(self, x,y,button, modifiers):
         if button == MOUSE_BUTTON_LEFT:
             print(self.get_viewport()[0]+x , self.get_viewport()[2]+y)
 
-    def on_key_release(self, symbol, modifiers):
-        if symbol == arcade.key.A or symbol == arcade.key.D:
-            self.player_sprite.change_x = 0
 
 
     def update(self, delta_time):
