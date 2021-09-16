@@ -168,7 +168,7 @@ class MyGame(arcade.Window):
 
         self.Foreground = arcade.load_texture("Foreground.png")
         
-        self.logo = arcade.load_texture("LOGO.png")
+        self.logo = arcade.load_texture("assets/LOGO.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                         self.wall_list,
@@ -185,7 +185,6 @@ class MyGame(arcade.Window):
 
 
         self.wall_list.draw()
-        # self.coin_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
 
@@ -193,7 +192,7 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
 
     def process_keychange(self):
- 
+        
         if self.up_pressed and not self.down_pressed:
             if self.physics_engine.is_on_ladder():
                 self.player_sprite.change_y = MOVEMENT_SPEED
