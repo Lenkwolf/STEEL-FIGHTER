@@ -43,8 +43,6 @@ class PlayerCharacter(arcade.Sprite):
         self.climbing = False
         self.is_on_ladder = False
 
-
-
         self.fall_texture_pair = load_texture_pair("RexFall.png")
         # Load textures for idling
         self.idle_textures = []
@@ -89,8 +87,6 @@ class PlayerCharacter(arcade.Sprite):
                 if self.cur_texture >  len(self.walk_textures)-1:
                     self.cur_texture = 0
                 self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
-            
-
             return
             
     def update(self, dt):
@@ -113,10 +109,6 @@ class Grunt(arcade.Sprite):
         self.character_face_direction = LEFT_FACING
         self.scale = SPRITE_SCALING_ENEMY
 
-
-
-
-
 class MyGame(arcade.Window):
 
     def __init__(self):
@@ -136,15 +128,12 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(True)
 
     def setup(self):
-        
-
 
         map_name = ":resources:tmx_maps/map.tmx"
 
         platforms_layer_name = 'Tile Layer 1'
 
         my_map = arcade.tilemap.read_tmx("1st map.tmx")
-
 
         self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
                                                      layer_name=platforms_layer_name,
@@ -156,13 +145,8 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
 
-        
         enemy = Grunt(3075, 448)
         self.enemy_list.append(enemy)
-    
-
-
-
 
         self.background = arcade.load_texture("background.png")
 
@@ -174,16 +158,11 @@ class MyGame(arcade.Window):
                                                         self.wall_list,
                                                         GRAVITY)
 
-            
     def on_draw(self):
         arcade.start_render()
 
-        
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         
-
-
-
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
@@ -194,9 +173,7 @@ class MyGame(arcade.Window):
     def process_keychange(self):
         
         if self.up_pressed and not self.down_pressed:
-            if self.physics_engine.is_on_ladder():
-                self.player_sprite.change_y = MOVEMENT_SPEED
-            elif (
+            if (
                 self.physics_engine.can_jump(y_distance=10)
                 and not self.jump_needs_reset
             ):
