@@ -162,12 +162,12 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
-        
+        arcade.draw_lrwh_rectangle_textured(543, 270, 400, 500, self.logo)
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
 
-        arcade.draw_lrwh_rectangle_textured(500, 550, 500, 100, self.logo)
+        
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
 
     def process_keychange(self):
