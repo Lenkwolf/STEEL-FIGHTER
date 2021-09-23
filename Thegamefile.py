@@ -16,6 +16,7 @@ SPRITE_SCALING_BOX = 0.3
 PLAYER_JUMP_SPEED = 9
 RIGHT_FACING = 0
 LEFT_FACING = 1
+ENEMY_SPEED = 3
 
 def load_texture_pair(filename):
      return [
@@ -99,15 +100,62 @@ class PlayerCharacter(arcade.Sprite):
 
             self.update_animation()
 
-class Grunt(arcade.Sprite):
+class Enemy(arcade.Sprite):
 
     def __init__(self,x,y):
-        super().__init__("enemy cutout.png")
+        super().__init__()
         self.center_x = x
         self.center_y = y
         self.cur_texture = 0
-        self.character_face_direction = LEFT_FACING
+        self.change_x = ENEMY_SPEED
+        self.character_face_direction = RIGHT_FACING
         self.scale = SPRITE_SCALING_ENEMY
+        self.patrol = 100
+        self.start_x = x
+        
+        self.steps = random.randint(30, 90)
+
+        self.idle_textures = []
+        for i in range(8):
+            for j in range(10):
+                texture = load_texture_pair(f"./enemyidle/enemy_{i}.png")
+                self.idle_textures.append(texture)
+        
+        self.walk_textures = []
+        for i in range(2):
+            for j in range(4):
+                texture = load_texture_pair(f"./enemywalk/enemyrun_{i}.png")
+                self.walk_textures.append(texture)
+
+        self.texture = self.idle_textures[0][0]
+    def on_update(self, delta_time):
+        self.steps -= 1
+        if self.steps >= 0:
+            if self.center_x > self.start_x + self.patrol:
+                self.change_x = -ENEMY_SPEED
+                self.character_face_direction = RIGHT_FACING
+            elif self.center_x < self.start_x - self.patrol:
+                self.change_x = ENEMY_SPEED
+                self.character_face_direction = LEFT_FACING
+        else:
+            if self.steps <- 60:
+                self.steps = random.randint(30, 90)
+    def update_animation(self, delta_time: float = 1/60):
+        if self.change_x == 0:
+            self.cur_texture += 1
+            if self.cur_texture > len(self.idle_textures)-1:
+                self.cur_texture = 0
+            self.texture = self.idle_textures[self.cur_texture][self.character_face_direction]
+
+        elif self.change_x != 0:
+            self.cur_texture += 1
+            if self.cur_texture >  len(self.walk_textures)-1:
+                self.cur_texture = 0
+            self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+    def update(self):
+            self.center_x += self.change_x
+            self.center_y += self.change_y
+            self.update_animation()
 
 class MyGame(arcade.Window):
 
@@ -119,6 +167,7 @@ class MyGame(arcade.Window):
         self.wall_list = None
         self.physics_engine = None
         self.player_sprite = None
+        self.enemy_sprite = None
         self.left_pressed = False
         self.right_pressed = False
         self.up_pressed = False
@@ -145,7 +194,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
 
-        enemy = Grunt(3075, 448)
+        enemy = Enemy(3075, 448)
         self.enemy_list.append(enemy)
 
         self.background = arcade.load_texture("background.png")
@@ -219,7 +268,7 @@ class MyGame(arcade.Window):
         self.set_viewport(self.player_sprite.center_x - SCREEN_WIDTH/2, self.player_sprite.center_x + SCREEN_WIDTH/2, self.player_sprite.center_y - SCREEN_HEIGHT/2, self.player_sprite.center_y + SCREEN_HEIGHT/2)
         self.player_sprite.update(delta_time)
         self.physics_engine.update()
-        self.enemy_list.update()
+        self.enemy_list.on_update()
 
 def main():
     window = MyGame()
