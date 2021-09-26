@@ -1,5 +1,7 @@
+
 import arcade
 import random
+
 
 from arcade.application import MOUSE_BUTTON_LEFT
 
@@ -10,7 +12,7 @@ SPRITE_SCALING_COIN = 0.5
 COIN_COUNT = 0
 MOVEMENT_SPEED = 4
 SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 720
+SCREEN_HEIGHT = 1024
 GRAVITY = 0.4
 SPRITE_SCALING_BOX = 0.3
 PLAYER_JUMP_SPEED = 9
@@ -112,9 +114,7 @@ class Enemy(arcade.Sprite):
         self.scale = SPRITE_SCALING_ENEMY
         self.patrol = 100
         self.start_x = x
-        
         self.steps = random.randint(30, 90)
-
         self.idle_textures = []
         for i in range(8):
             for j in range(10):
@@ -129,7 +129,7 @@ class Enemy(arcade.Sprite):
 
         self.texture = self.idle_textures[0][0]
     def on_update(self, delta_time):
-        self.steps -= 1
+        self.steps -= -1
         if self.steps >= 0:
             if self.center_x > self.start_x + self.patrol:
                 self.change_x = -ENEMY_SPEED
@@ -217,7 +217,8 @@ class MyGame(arcade.Window):
         self.player_list.draw()
 
         
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 720, self.Foreground)
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 1024
+    , self.Foreground)
 
     def process_keychange(self):
         
