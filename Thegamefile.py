@@ -110,7 +110,7 @@ class Enemy(arcade.Sprite):
         self.center_y = y
         self.cur_texture = 0
         self.change_x = ENEMY_SPEED
-        self.character_face_direction = RIGHT_FACING
+        self.character_face_direction = LEFT_FACING
         self.scale = SPRITE_SCALING_ENEMY
         self.patrol = 100
         self.start_x = x
@@ -129,8 +129,9 @@ class Enemy(arcade.Sprite):
 
         self.texture = self.idle_textures[0][0]
     def on_update(self, delta_time):
-        self.steps -= -1
-        if self.steps >= 0:
+
+        self.steps = -1
+        if self.steps <= 0:
             if self.center_x > self.start_x + self.patrol:
                 self.change_x = -ENEMY_SPEED
                 self.character_face_direction = RIGHT_FACING
@@ -140,6 +141,7 @@ class Enemy(arcade.Sprite):
         else:
             if self.steps <- 60:
                 self.steps = random.randint(30, 90)
+        self.update()
     def update_animation(self, delta_time: float = 1/60):
         if self.change_x == 0:
             self.cur_texture += 1
@@ -194,7 +196,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
 
-        enemy = Enemy(3075, 448)
+        enemy = Enemy(1000, 384)
         self.enemy_list.append(enemy)
 
         self.background = arcade.load_texture("background.png")
