@@ -12,7 +12,7 @@ SPRITE_SCALING_COIN = 0.5
 COIN_COUNT = 0
 MOVEMENT_SPEED = 4
 SCREEN_WIDTH = 1280
-SCREEN_HEIGHT = 1024
+SCREEN_HEIGHT = 960
 GRAVITY = 0.4
 SPRITE_SCALING_BOX = 0.3
 PLAYER_JUMP_SPEED = 9
@@ -96,7 +96,7 @@ class PlayerCharacter(arcade.Sprite):
             self.center_x += self.change_x
             self.center_y += self.change_y
 
-            if self.bottom < -400:
+            if self.bottom < -0:
                 self.center_x = 735
                 self.center_y = 384
 
@@ -112,7 +112,7 @@ class Enemy(arcade.Sprite):
         self.change_x = ENEMY_SPEED
         self.character_face_direction = RIGHT_FACING
         self.scale = SPRITE_SCALING_ENEMY
-        self.patrol = 100
+        self.patrol = 1000
         self.start_x = x
         self.steps = random.randint(30, 90)
         self.idle_textures = []
@@ -128,18 +128,19 @@ class Enemy(arcade.Sprite):
                 self.walk_textures.append(texture)
 
         self.texture = self.idle_textures[0][0]
+
+
     def on_update(self, delta_time):
-        self.steps -= -1
-        if self.steps >= 0:
-            if self.center_x > self.start_x + self.patrol:
-                self.change_x = -ENEMY_SPEED
-                self.character_face_direction = RIGHT_FACING
-            elif self.center_x < self.start_x - self.patrol:
-                self.change_x = ENEMY_SPEED
-                self.character_face_direction = LEFT_FACING
-        else:
-            if self.steps <- 60:
-                self.steps = random.randint(30, 90)
+        print(self.change_x)
+        if self.center_x > self.start_x + self.patrol:
+            self.change_x = -ENEMY_SPEED
+            self.character_face_direction = RIGHT_FACING
+        elif self.center_x < self.start_x - self.patrol:
+            self.change_x = ENEMY_SPEED
+            self.character_face_direction = LEFT_FACING
+
+        self.update_animation()
+
     def update_animation(self, delta_time: float = 1/60):
         if self.change_x == 0:
             self.cur_texture += 1
@@ -152,10 +153,11 @@ class Enemy(arcade.Sprite):
             if self.cur_texture >  len(self.walk_textures)-1:
                 self.cur_texture = 0
             self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+
     def update(self):
-            self.center_x += self.change_x
-            self.center_y += self.change_y
-            self.update_animation()
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+            
 
 class MyGame(arcade.Window):
 
@@ -210,14 +212,14 @@ class MyGame(arcade.Window):
     def on_draw(self):
         arcade.start_render()
 
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0]-200, self.get_viewport()[2], 1650, SCREEN_HEIGHT, self.background)
         arcade.draw_lrwh_rectangle_textured(543, 270, 400, 500, self.logo)
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
 
         
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 1024
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 960
     , self.Foreground)
 
     def process_keychange(self):
@@ -246,8 +248,10 @@ class MyGame(arcade.Window):
             self.left_pressed = True
         elif key == arcade.key.D:
             self.right_pressed = True
+        elif key == arcade.key.L:
+            MOVEMENT_SPEED = 300
         self.process_keychange()
-
+       
     def on_key_release(self, key, modifiers):
         if key == arcade.key.SPACE:
             self.up_pressed = False
