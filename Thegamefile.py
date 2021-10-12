@@ -31,8 +31,8 @@ class PlayerCharacter(arcade.Sprite):
     def __init__(self):
         # Set up parent class
         super().__init__()
-        self.center_x = 735
-        self.center_y = 384
+        self.center_x = 1376
+        self.center_y = 1200
 
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
@@ -96,9 +96,9 @@ class PlayerCharacter(arcade.Sprite):
             self.center_x += self.change_x
             self.center_y += self.change_y
 
-            if self.bottom < -0:
-                self.center_x = 735
-                self.center_y = 384
+            if self.bottom < 400:
+                self.center_x = 1376
+                self.center_y = 1200
 
             self.update_animation()
 
@@ -112,7 +112,7 @@ class Enemy(arcade.Sprite):
         self.change_x = ENEMY_SPEED
         self.character_face_direction = LEFT_FACING
         self.scale = SPRITE_SCALING_ENEMY
-        self.patrol = 200
+        self.patrol = 100
         self.start_x = x
         self.steps = random.randint(30, 90)
         self.idle_textures = []
@@ -132,7 +132,7 @@ class Enemy(arcade.Sprite):
 
     def on_update(self, delta_time):
         self.update()
-        self.steps -= -1
+        self.steps -= 1
 
         if self.steps <- 60:
             self.steps = random.randint(30, 90)
@@ -200,7 +200,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
 
-        enemy = Enemy(1000, 384)
+        enemy = Enemy(3714, 1280)
         self.enemy_list.append(enemy)
 
         self.background = arcade.load_texture("background.png")
@@ -217,7 +217,7 @@ class MyGame(arcade.Window):
         arcade.start_render()
 
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0]-200, self.get_viewport()[2], 1650, SCREEN_HEIGHT, self.background)
-        arcade.draw_lrwh_rectangle_textured(543, 270, 400, 500, self.logo)
+        arcade.draw_lrwh_rectangle_textured(1181, 1077, 400, 500, self.logo)
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
