@@ -104,6 +104,7 @@ class PlayerCharacter(arcade.Sprite):
 
 class Enemy(arcade.Sprite):
 
+
     def __init__(self,x,y,patrol):
         super().__init__()
         self.center_x = x
@@ -161,7 +162,10 @@ class Enemy(arcade.Sprite):
     def update(self):
         self.center_x += self.change_x
         self.center_y += self.change_y
-        self.update_animation()    
+        self.update_animation()
+
+    
+class Enemy(arcade.Sprite):
 
 class MyGame(arcade.Window):
 
