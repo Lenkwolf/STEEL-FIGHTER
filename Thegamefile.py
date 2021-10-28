@@ -210,6 +210,12 @@ class MyGame(arcade.Window):
         enemy = Enemy(4250, 1727, 20)
         self.enemy_list.append(enemy)
 
+        enemy = Enemy(7230, 2045, 100)
+        self.enemy_list.append(enemy)
+
+        enemy = Enemy(7230, 1790, 150)
+        self.enemy_list.append(enemy)
+
         self.background = arcade.load_texture("background.png")
 
         self.Foreground = arcade.load_texture("Foreground.png")
