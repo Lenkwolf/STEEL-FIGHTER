@@ -164,9 +164,6 @@ class Enemy(arcade.Sprite):
         self.center_y += self.change_y
         self.update_animation()
 
-    
-class Enemy(arcade.Sprite):
-
 class MyGame(arcade.Window):
 
     def __init__(self):
