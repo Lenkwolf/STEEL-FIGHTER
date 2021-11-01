@@ -204,10 +204,10 @@ class MyGame(arcade.Window):
         enemy = Enemy(3714, 1280, 100)
         self.enemy_list.append(enemy)
 
-        enemy = Enemy(4667, 1406, 50)
+        enemy = Enemy(4667, 1406, 70)
         self.enemy_list.append(enemy)
 
-        enemy = Enemy(4250, 1727, 20)
+        enemy = Enemy(4250, 1727, 40)
         self.enemy_list.append(enemy)
 
         enemy = Enemy(7230, 2045, 100)
