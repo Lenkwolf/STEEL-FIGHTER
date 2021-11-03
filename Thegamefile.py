@@ -108,10 +108,6 @@ class PlayerCharacter(arcade.Sprite):
             self.center_x += self.change_x
             self.center_y += self.change_y
 
-            if self.bottom < 400:
-                self.center_x = 1376
-                self.center_y = 1200
-
             self.update_animation()
 
 class Particle(arcade.SpriteCircle):
@@ -219,9 +215,10 @@ class MyGame(arcade.Window):
         self.jump_needs_reset = False
         self.bullet_list = None
         self.explosions_list = None
+        self.level = 1
         self.set_mouse_visible(True)
 
-    def setup(self):
+    def setup(self, level):
 
         map_name = ":resources:tmx_maps/map.tmx"
 
@@ -305,8 +302,21 @@ class MyGame(arcade.Window):
             self.left_pressed = True
         elif key == arcade.key.D:
             self.right_pressed = True
-        elif key == arcade.key.L:
-            MOVEMENT_SPEED = 300
+        elif key == arcade.key.ENTER:
+            bullet = arcade.Sprite("Bullet.png", SPRITE_SCALING_BULLET)
+            # Give the bullet a speed
+            if self.player_sprite.character_face_direction == RIGHT_FACING:
+                bullet.change_x = BULLET_SPEED 
+                bullet.angle = 0
+                bullet.center_x = self.player_sprite.center_x+30
+                bullet.bottom = self.player_sprite.center_y-15
+            if self.player_sprite.character_face_direction == LEFT_FACING:
+                bullet.change_x = -BULLET_SPEED
+                bullet.angle = 180
+                bullet.center_x = self.player_sprite.center_x-30
+                bullet.bottom = self.player_sprite.center_y-15
+            # Add the bullet to the appropriate lists
+            self.bullet_list.append(bullet)
         self.process_keychange()
        
     def on_key_release(self, key, modifiers):
@@ -321,24 +331,9 @@ class MyGame(arcade.Window):
 
 
     def on_mouse_press(self, x, y, button, modifiers):
-
-        bullet = arcade.Sprite("Bullet.png", SPRITE_SCALING_BULLET)
-
-        # Give the bullet a speed
-        if self.player_sprite.character_face_direction == RIGHT_FACING:
-            bullet.change_x = BULLET_SPEED 
-            bullet.angle = 0
-            bullet.center_x = self.player_sprite.center_x+30
-            bullet.bottom = self.player_sprite.center_y-15
-        if self.player_sprite.character_face_direction == LEFT_FACING:
-            bullet.change_x = -BULLET_SPEED
-            bullet.angle = 180
-            bullet.center_x = self.player_sprite.center_x-30
-            bullet.bottom = self.player_sprite.center_y-15
-
-        # Add the bullet to the appropriate lists
-        self.bullet_list.append(bullet)
-
+        map_mouse_x = self.get_viewport()[0] + x
+        map_mouse_y = self.get_viewport()[2] + y
+        print(f'{map_mouse_x = } {map_mouse_y = } ')
 
 
 
@@ -349,6 +344,15 @@ class MyGame(arcade.Window):
         self.physics_engine.update()
         self.enemy_list.on_update()
         self.explosions_list.update()
+        if self.player_sprite.center_y <= 400:
+            self.setup(self.level)
+
+
+        enemy_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)
+        for enemy in enemy_hit_list:
+            if enemy_hit_list:
+                self.setup(self.level)
+
         for bullet in self.bullet_list:
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
             if len(hit_list) > 0:
@@ -363,13 +367,14 @@ class MyGame(arcade.Window):
             hit_list = arcade.check_for_collision_with_list(bullet, self.wall_list)
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
-
+            if bullet.center_x > self.get_viewport()[0] + SCREEN_WIDTH :
+                bullet.remove_from_sprite_lists()
 
 
 
 def main():
     window = MyGame()
-    window.setup()
+    window.setup(1)
     arcade.run()
 
 
