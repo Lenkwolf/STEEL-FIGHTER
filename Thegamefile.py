@@ -4,7 +4,7 @@ import random
 
 
 from arcade.application import MOUSE_BUTTON_LEFT
-
+SPRITE_SCALING_BULLET = 0.4
 SPRITE_SCALING_PLAYER = 0.4
 TILE_SCALING = 0.4
 SPRITE_SCALING_ENEMY = 0.4
@@ -19,7 +19,7 @@ PLAYER_JUMP_SPEED = 9
 RIGHT_FACING = 0
 LEFT_FACING = 1
 ENEMY_SPEED = 3
-
+BULLET_SPEED = 45
 def load_texture_pair(filename):
      return [
          arcade.load_texture(filename),
@@ -180,6 +180,7 @@ class MyGame(arcade.Window):
         self.up_pressed = False
         self.down_pressed = False
         self.jump_needs_reset = False
+        self.bullet_list = None
 
         self.set_mouse_visible(True)
 
@@ -200,6 +201,7 @@ class MyGame(arcade.Window):
         self.player_sprite = PlayerCharacter()
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
+        self.bullet_list = arcade.SpriteList()
 
         enemy = Enemy(3714, 1280, 100)
         self.enemy_list.append(enemy)
@@ -234,6 +236,7 @@ class MyGame(arcade.Window):
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
+        self.bullet_list.draw()
 
         
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 960
@@ -280,17 +283,46 @@ class MyGame(arcade.Window):
         self.process_keychange()
 
 
-    def on_mouse_press(self, x,y,button, modifiers):
-        if button == MOUSE_BUTTON_LEFT:
-            print(self.get_viewport()[0]+x , self.get_viewport()[2]+y)
+    def on_mouse_press(self, x, y, button, modifiers):
+
+        bullet = arcade.Sprite("Bullet.png", SPRITE_SCALING_BULLET)
+
+        # Give the bullet a speed
+        if self.player_sprite.character_face_direction == RIGHT_FACING:
+            bullet.change_x = BULLET_SPEED 
+            bullet.angle = 0
+            bullet.center_x = self.player_sprite.center_x+30
+            bullet.bottom = self.player_sprite.center_y-15
+        if self.player_sprite.character_face_direction == LEFT_FACING:
+            bullet.change_x = -BULLET_SPEED
+            bullet.angle = 180
+            bullet.center_x = self.player_sprite.center_x-30
+            bullet.bottom = self.player_sprite.center_y-15
+
+        # Add the bullet to the appropriate lists
+        self.bullet_list.append(bullet)
+
 
 
 
     def update(self, delta_time):
         self.set_viewport(self.player_sprite.center_x - SCREEN_WIDTH/2, self.player_sprite.center_x + SCREEN_WIDTH/2, self.player_sprite.center_y - SCREEN_HEIGHT/2, self.player_sprite.center_y + SCREEN_HEIGHT/2)
         self.player_sprite.update(delta_time)
+        self.bullet_list.update()
         self.physics_engine.update()
         self.enemy_list.on_update()
+        for bullet in self.bullet_list:
+            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+                Enemy.remove_from_sprite_lists()
+        for bullet in self.bullet_list:
+            hit_list = arcade.check_for_collision_with_list(bullet, self.wall_list)
+            if len(hit_list) > 0:
+                bullet.remove_from_sprite_lists()
+
+
+
 
 def main():
     window = MyGame()
