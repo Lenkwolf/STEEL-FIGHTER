@@ -1,7 +1,7 @@
 
 import arcade
 import random
-
+import math
 
 from arcade.application import MOUSE_BUTTON_LEFT
 SPRITE_SCALING_BULLET = 0.4
@@ -20,6 +20,18 @@ RIGHT_FACING = 0
 LEFT_FACING = 1
 ENEMY_SPEED = 3
 BULLET_SPEED = 45
+PARTICLE_GRAVITY = 0.2
+PARTICLE_FADE_RATE = 1
+PARTICLE_MIN_SPEED = 0
+PARTICLE_SPEED_RANGE = 2.5
+PARTICLE_COUNT = 550
+PARTICLE_RADIUS = 3
+PARTICLE_COLORS = [arcade.color.ALIZARIN_CRIMSON,
+                   arcade.color.RED,
+                   arcade.color.RED_BROWN,
+                   arcade.color.KU_CRIMSON,
+                   arcade.color.RED_DEVIL]
+
 def load_texture_pair(filename):
      return [
          arcade.load_texture(filename),
@@ -102,6 +114,31 @@ class PlayerCharacter(arcade.Sprite):
 
             self.update_animation()
 
+class Particle(arcade.SpriteCircle):
+    """ Explosion particle """
+    def __init__(self, my_list):
+        color = random.choice(PARTICLE_COLORS)
+        super().__init__(PARTICLE_RADIUS, color)
+        self.normal_texture = self.texture
+        self.my_list = my_list
+        speed = random.random() * PARTICLE_SPEED_RANGE + PARTICLE_MIN_SPEED
+        direction = random.randrange(360)
+        self.change_x = math.sin(math.radians(direction)) * speed
+        self.change_y = math.cos(math.radians(direction)) * speed
+        self.my_alpha = 255
+
+    def update(self):
+        """ Update the particle """
+        if self.my_alpha <= PARTICLE_FADE_RATE:
+            self.remove_from_sprite_lists()
+        else:
+            self.my_alpha -= PARTICLE_FADE_RATE
+            self.alpha = self.my_alpha
+            self.center_x += self.change_x
+            self.center_y += self.change_y
+            self.change_y -= PARTICLE_GRAVITY
+
+
 class Enemy(arcade.Sprite):
 
 
@@ -181,7 +218,7 @@ class MyGame(arcade.Window):
         self.down_pressed = False
         self.jump_needs_reset = False
         self.bullet_list = None
-
+        self.explosions_list = None
         self.set_mouse_visible(True)
 
     def setup(self):
@@ -202,7 +239,7 @@ class MyGame(arcade.Window):
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
-
+        self.explosions_list = arcade.SpriteList()
         enemy = Enemy(3714, 1280, 100)
         self.enemy_list.append(enemy)
 
@@ -237,7 +274,7 @@ class MyGame(arcade.Window):
         self.enemy_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
-
+        self.explosions_list.draw()
         
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 960
     , self.Foreground)
@@ -311,11 +348,17 @@ class MyGame(arcade.Window):
         self.bullet_list.update()
         self.physics_engine.update()
         self.enemy_list.on_update()
+        self.explosions_list.update()
         for bullet in self.bullet_list:
             hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
-                Enemy.remove_from_sprite_lists()
+            for enemy in hit_list:
+                for i in range(PARTICLE_COUNT):
+                    particle = Particle(self.explosions_list)
+                    particle.position = enemy.position
+                    self.explosions_list.append(particle)
+                enemy.remove_from_sprite_lists()
         for bullet in self.bullet_list:
             hit_list = arcade.check_for_collision_with_list(bullet, self.wall_list)
             if len(hit_list) > 0:
