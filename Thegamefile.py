@@ -43,21 +43,15 @@ class PlayerCharacter(arcade.Sprite):
     def __init__(self):
         # Set up parent class
         super().__init__()
-        self.center_x = 1376
-        self.center_y = 1200
-
         # Default to face-right
         self.character_face_direction = RIGHT_FACING
-
         # Used for flipping between image sequences
         self.cur_texture = 0
         self.scale = SPRITE_SCALING_PLAYER
-
         # Track our state
         self.jumping = False
         self.climbing = False
         self.is_on_ladder = False
-
         self.fall_texture_pair = load_texture_pair("RexFall.png")
         # Load textures for idling
         self.idle_textures = []
@@ -196,7 +190,12 @@ class Enemy(arcade.Sprite):
         self.center_x += self.change_x
         self.center_y += self.change_y
         self.update_animation()
+class Win(arcade.Sprite):
+    def __init__(self, x, y):
 
+        super().__init__("dev tex 1.png",0.2)
+        self.center_x = x
+        self.center_y = y
 class MyGame(arcade.Window):
 
     def __init__(self):
@@ -217,22 +216,24 @@ class MyGame(arcade.Window):
         self.explosions_list = None
         self.level = 1
         self.set_mouse_visible(True)
-
+        self.win_list = None
     def setup(self, level):
 
         map_name = ":resources:tmx_maps/map.tmx"
 
         platforms_layer_name = 'Tile Layer 1'
 
-        my_map = arcade.tilemap.read_tmx("1st map.tmx")
+        my_map = arcade.tilemap.read_tmx(f"{level} map.tmx")
 
         self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
                                                      layer_name=platforms_layer_name,
                                                      scaling=TILE_SCALING,
                                                      use_spatial_hash=True)
-
+        self.win_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.player_sprite = PlayerCharacter()
+        self.player_sprite.center_x = 1376 
+        self.player_sprite.center_y = 1200
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
@@ -251,6 +252,8 @@ class MyGame(arcade.Window):
 
         enemy = Enemy(7230, 1790, 150)
         self.enemy_list.append(enemy)
+        win = Win(8926, 2151)
+        self.win_list.append(win)
 
         self.background = arcade.load_texture("background.png")
 
@@ -262,6 +265,7 @@ class MyGame(arcade.Window):
                                                         self.wall_list,
                                                         GRAVITY)
 
+
     def on_draw(self):
         arcade.start_render()
 
@@ -272,7 +276,7 @@ class MyGame(arcade.Window):
         self.player_list.draw()
         self.bullet_list.draw()
         self.explosions_list.draw()
-        
+        self.win_list.draw()
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 960
     , self.Foreground)
 
@@ -370,7 +374,17 @@ class MyGame(arcade.Window):
             if bullet.center_x > self.get_viewport()[0] + SCREEN_WIDTH :
                 bullet.remove_from_sprite_lists()
 
+        win_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.win_list)
+        for win in win_hit_list:
 
+            if win_hit_list:
+                self.level += 1
+                self.setup(self.level)
+                if self.level == 2:
+                    self.win_list[0].center_x = 8295
+                    self.win_list[0].center_y = 4752
+                    self.player_sprite.center_x = 930 
+                    self.player_sprite.center_y = 1200
 
 def main():
     window = MyGame()
