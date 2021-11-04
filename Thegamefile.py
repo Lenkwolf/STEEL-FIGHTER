@@ -229,6 +229,7 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(True)
         self.win_list = None
         self.win = arcade.load_texture('blank.png')
+        self.logo = arcade.load_texture('blank.png')
 
     def setup(self, level):
         '''sets up map and enemies'''
@@ -270,7 +271,7 @@ class MyGame(arcade.Window):
             win = Win(8926, 2151)
             self.win_list.append(win)
             self.background = arcade.load_texture("background.png")
-
+            self.logo = arcade.load_texture("assets/LOGO.png")
         if level == 2:
             enemy = Enemy(2624, 1408, 100)
             self.enemy_list.append(enemy)
@@ -301,11 +302,10 @@ class MyGame(arcade.Window):
             self.player_sprite.center_y = 1200
         if level == 4:
             self.win = arcade.load_texture("conglaturation.png")
-            self.player_sprite.center_x = 930
+            self.background = arcade.load_texture("level 2 background.png")
+            self.player_sprite.center_x = 1150
             self.player_sprite.center_y = 1200
         self.Foreground = arcade.load_texture("Foreground.png")
-
-        self.logo = arcade.load_texture("assets/LOGO.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                              self.wall_list,
@@ -317,7 +317,7 @@ class MyGame(arcade.Window):
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[
                                             2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         arcade.draw_lrwh_rectangle_textured(1181, 1077, 400, 500, self.logo)
-        arcade.draw_lrwh_rectangle_textured(1100, 1000, 768, 263, self.win)
+        arcade.draw_lrwh_rectangle_textured(768, 1250, 768, 263, self.win)
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
