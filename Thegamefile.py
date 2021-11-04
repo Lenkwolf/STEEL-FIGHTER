@@ -285,7 +285,7 @@ class MyGame(arcade.Window):
             enemy = Enemy(4251, 1664, 30)
             self.enemy_list.append(enemy)
 
-            enemy = Enemy(4918, 1539, 100)
+            enemy = Enemy(4918, 1539, 50)
             self.enemy_list.append(enemy)
 
             enemy = Enemy(5912, 1539, 100)
@@ -298,11 +298,39 @@ class MyGame(arcade.Window):
             self.enemy_list.append(enemy)
 
             self.background = arcade.load_texture("level 2 background.png")
+            self.win = arcade.load_texture('blank.png')
+            self.logo = arcade.load_texture('blank.png')
             self.player_sprite.center_x = 930
             self.player_sprite.center_y = 1200
+            win = Win(8606, 2040)
+            self.win_list.append(win)
+        if level == 3:
+            enemy = Enemy(1857, 1408, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(3984, 1665, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(4628, 1728, 50)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(5644, 1665, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(7170, 1665, 100)
+            self.enemy_list.append(enemy)
+
+            self.player_sprite.center_x = 930
+            self.player_sprite.center_y = 1200
+            self.background = arcade.load_texture("background.png")
+            self.win = arcade.load_texture('blank.png')
+            self.logo = arcade.load_texture('blank.png')
+            win = Win(8861, 2485)
+            self.win_list.append(win)
         if level == 4:
             self.win = arcade.load_texture("conglaturation.png")
             self.background = arcade.load_texture("level 2 background.png")
+            self.logo = arcade.load_texture('blank.png')
             self.player_sprite.center_x = 1150
             self.player_sprite.center_y = 1200
         self.Foreground = arcade.load_texture("Foreground.png")
@@ -434,7 +462,7 @@ class MyGame(arcade.Window):
 
 def main():
     window = MyGame()
-    window.setup(4)
+    window.setup(3)
     arcade.run()
 
 
