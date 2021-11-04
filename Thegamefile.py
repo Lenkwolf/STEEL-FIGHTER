@@ -265,6 +265,7 @@ class MyGame(arcade.Window):
 
             enemy = Enemy(7230, 1790, 150)
             self.enemy_list.append(enemy)
+
             win = Win(8926, 2151)
             self.win_list.append(win)
             self.background = arcade.load_texture("background.png")
@@ -392,7 +393,7 @@ class MyGame(arcade.Window):
         self.explosions_list.update()
         if self.player_sprite.center_y <= 400:
             self.setup(self.level)
-            arcade.draw_text("Game over",self.player_sprite.center_x, self.player_sprite.center_y,arcade.color.WHITE,50)
+
         enemy_hit_list = arcade.check_for_collision_with_list(
             self.player_sprite, self.enemy_list)
         for enemy in enemy_hit_list:
