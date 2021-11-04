@@ -462,7 +462,7 @@ class MyGame(arcade.Window):
 
 def main():
     window = MyGame()
-    window.setup(3)
+    window.setup(1)
     arcade.run()
 
 
