@@ -130,7 +130,7 @@ class Particle(arcade.SpriteCircle):
 
 
 class Enemy(arcade.Sprite):
-
+    '''sets up enemies'''
 
     def __init__(self,x,y,patrol):
         super().__init__()
@@ -191,15 +191,16 @@ class Enemy(arcade.Sprite):
         self.center_y += self.change_y
         self.update_animation()
 class Win(arcade.Sprite):
+    '''allows player to progress through levels'''
     def __init__(self, x, y):
 
         super().__init__("dev tex 1.png",0.2)
         self.center_x = x
         self.center_y = y
 class MyGame(arcade.Window):
-
+    '''sets up the game function'''
     def __init__(self):
-
+        '''sets up assets'''
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "STEEL FIGHTER")
 
         self.player_list = None
@@ -218,7 +219,7 @@ class MyGame(arcade.Window):
         self.set_mouse_visible(True)
         self.win_list = None
     def setup(self, level):
-
+        '''sets up map and enemies'''
         map_name = ":resources:tmx_maps/map.tmx"
 
         platforms_layer_name = 'Tile Layer 1'
@@ -256,6 +257,7 @@ class MyGame(arcade.Window):
             win = Win(8926, 2151)
             self.win_list.append(win)
             self.background = arcade.load_texture("background.png")
+            
         if level == 2:
             enemy = Enemy(2624, 1408, 100)
             self.enemy_list.append(enemy)
@@ -292,11 +294,9 @@ class MyGame(arcade.Window):
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
                                                         self.wall_list,
                                                         GRAVITY)
-
-
     def on_draw(self):
+        '''draws the map and entities'''
         arcade.start_render()
-
         arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0]-200, self.get_viewport()[2], 1650, SCREEN_HEIGHT, self.background)
         arcade.draw_lrwh_rectangle_textured(1181, 1077, 400, 500, self.logo)
         self.wall_list.draw()
@@ -317,7 +317,6 @@ class MyGame(arcade.Window):
             ):
                 self.player_sprite.change_y = PLAYER_JUMP_SPEED
                 self.jump_needs_reset = True
-
 
             # Process left/right
         if self.right_pressed and not self.left_pressed:
@@ -370,6 +369,7 @@ class MyGame(arcade.Window):
 
 
     def update(self, delta_time):
+        '''updates time and checks for collisions'''
         self.set_viewport(self.player_sprite.center_x - SCREEN_WIDTH/2, self.player_sprite.center_x + SCREEN_WIDTH/2, self.player_sprite.center_y - SCREEN_HEIGHT/2, self.player_sprite.center_y + SCREEN_HEIGHT/2)
         self.player_sprite.update(delta_time)
         self.bullet_list.update()
