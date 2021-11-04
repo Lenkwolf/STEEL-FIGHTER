@@ -4,6 +4,8 @@ import random
 import math
 
 from arcade.application import MOUSE_BUTTON_LEFT
+from arcade.draw_commands import draw_lrwh_rectangle_textured
+from arcade.key import ESCAPE
 SPRITE_SCALING_BULLET = 0.4
 SPRITE_SCALING_PLAYER = 0.4
 TILE_SCALING = 0.4
@@ -32,14 +34,17 @@ PARTICLE_COLORS = [arcade.color.ALIZARIN_CRIMSON,
                    arcade.color.KU_CRIMSON,
                    arcade.color.RED_DEVIL]
 
+
 def load_texture_pair(filename):
-     return [
-         arcade.load_texture(filename),
-         arcade.load_texture(filename, flipped_horizontally=True)]
+    return [
+        arcade.load_texture(filename),
+        arcade.load_texture(filename, flipped_horizontally=True)]
+
 
 class PlayerCharacter(arcade.Sprite):
-    
+
     """ Player Sprite"""
+
     def __init__(self):
         # Set up parent class
         super().__init__()
@@ -69,43 +74,44 @@ class PlayerCharacter(arcade.Sprite):
 
         # Set the initial texture
         self.texture = self.idle_textures[0][0]
+
     def update_animation(self, delta_time: float = 1/60):
 
-            
-            #left and right
-            if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
-                self.character_face_direction = LEFT_FACING
-            elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
-                self.character_face_direction = RIGHT_FACING
-            
-            #falling 
-            elif self.change_y < 0 and not self.is_on_ladder:
-                self.texture = self.fall_texture_pair[self.character_face_direction] 
-            
-            # Idle animation
-            elif self.change_x == 0:
-                self.cur_texture += 1
-                if self.cur_texture > len(self.idle_textures)-1:
-                    self.cur_texture = 0
-                self.texture = self.idle_textures[self.cur_texture][self.character_face_direction]
-           
-           
-            # walking animation
-            elif self.change_x != 0:
-                self.cur_texture += 1
-                if self.cur_texture >  len(self.walk_textures)-1:
-                    self.cur_texture = 0
-                self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
-            return
-            
-    def update(self, dt):
-            self.center_x += self.change_x
-            self.center_y += self.change_y
+        #left and right
+        if self.change_x < 0 and self.character_face_direction == RIGHT_FACING:
+            self.character_face_direction = LEFT_FACING
+        elif self.change_x > 0 and self.character_face_direction == LEFT_FACING:
+            self.character_face_direction = RIGHT_FACING
 
-            self.update_animation()
+        # falling
+        elif self.change_y < 0 and not self.is_on_ladder:
+            self.texture = self.fall_texture_pair[self.character_face_direction]
+
+        # Idle animation
+        elif self.change_x == 0:
+            self.cur_texture += 1
+            if self.cur_texture > len(self.idle_textures)-1:
+                self.cur_texture = 0
+            self.texture = self.idle_textures[self.cur_texture][self.character_face_direction]
+
+        # walking animation
+        elif self.change_x != 0:
+            self.cur_texture += 1
+            if self.cur_texture > len(self.walk_textures)-1:
+                self.cur_texture = 0
+            self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
+        return
+
+    def update(self, dt):
+        self.center_x += self.change_x
+        self.center_y += self.change_y
+
+        self.update_animation()
+
 
 class Particle(arcade.SpriteCircle):
     """ Explosion particle """
+
     def __init__(self, my_list):
         color = random.choice(PARTICLE_COLORS)
         super().__init__(PARTICLE_RADIUS, color)
@@ -132,7 +138,7 @@ class Particle(arcade.SpriteCircle):
 class Enemy(arcade.Sprite):
     '''sets up enemies'''
 
-    def __init__(self,x,y,patrol):
+    def __init__(self, x, y, patrol):
         super().__init__()
         self.center_x = x
         self.center_y = y
@@ -148,7 +154,7 @@ class Enemy(arcade.Sprite):
             for j in range(10):
                 texture = load_texture_pair(f"./enemyidle/enemy_{i}.png")
                 self.idle_textures.append(texture)
-        
+
         self.walk_textures = []
         for i in range(2):
             for j in range(4):
@@ -157,12 +163,11 @@ class Enemy(arcade.Sprite):
 
         self.texture = self.idle_textures[0][0]
 
-
     def on_update(self, delta_time):
         self.update()
         self.steps -= 1
 
-        if self.steps <- 60:
+        if self.steps < - 60:
             self.steps = random.randint(10, 20)
         elif self.steps <= 0:
             if self.center_x > self.start_x + self.patrol:
@@ -171,7 +176,6 @@ class Enemy(arcade.Sprite):
             elif self.center_x < self.start_x - self.patrol:
                 self.change_x = ENEMY_SPEED
                 self.character_face_direction = LEFT_FACING
-
 
     def update_animation(self, delta_time: float = 1/60):
         if self.change_x == 0:
@@ -182,7 +186,7 @@ class Enemy(arcade.Sprite):
 
         elif self.change_x != 0:
             self.cur_texture += 1
-            if self.cur_texture >  len(self.walk_textures)-1:
+            if self.cur_texture > len(self.walk_textures)-1:
                 self.cur_texture = 0
             self.texture = self.walk_textures[self.cur_texture][self.character_face_direction]
 
@@ -190,15 +194,21 @@ class Enemy(arcade.Sprite):
         self.center_x += self.change_x
         self.center_y += self.change_y
         self.update_animation()
+
+
 class Win(arcade.Sprite):
     '''allows player to progress through levels'''
+
     def __init__(self, x, y):
 
-        super().__init__("dev tex 1.png",0.2)
+        super().__init__("dev tex 1.png", 0.2)
         self.center_x = x
         self.center_y = y
+
+
 class MyGame(arcade.Window):
     '''sets up the game function'''
+
     def __init__(self):
         '''sets up assets'''
         super().__init__(SCREEN_WIDTH, SCREEN_HEIGHT, "STEEL FIGHTER")
@@ -218,6 +228,7 @@ class MyGame(arcade.Window):
         self.level = 1
         self.set_mouse_visible(True)
         self.win_list = None
+
     def setup(self, level):
         '''sets up map and enemies'''
         map_name = ":resources:tmx_maps/map.tmx"
@@ -227,13 +238,13 @@ class MyGame(arcade.Window):
         my_map = arcade.tilemap.read_tmx(f"{level} map.tmx")
 
         self.wall_list = arcade.tilemap.process_layer(map_object=my_map,
-                                                     layer_name=platforms_layer_name,
-                                                     scaling=TILE_SCALING,
-                                                     use_spatial_hash=True)
+                                                      layer_name=platforms_layer_name,
+                                                      scaling=TILE_SCALING,
+                                                      use_spatial_hash=True)
         self.win_list = arcade.SpriteList()
         self.player_list = arcade.SpriteList()
         self.player_sprite = PlayerCharacter()
-        self.player_sprite.center_x = 1376 
+        self.player_sprite.center_x = 1376
         self.player_sprite.center_y = 1200
         self.player_list.append(self.player_sprite)
         self.enemy_list = arcade.SpriteList()
@@ -257,7 +268,7 @@ class MyGame(arcade.Window):
             win = Win(8926, 2151)
             self.win_list.append(win)
             self.background = arcade.load_texture("background.png")
-            
+
         if level == 2:
             enemy = Enemy(2624, 1408, 100)
             self.enemy_list.append(enemy)
@@ -267,11 +278,11 @@ class MyGame(arcade.Window):
 
             enemy = Enemy(3262, 1664, 100)
             self.enemy_list.append(enemy)
-            
+
             enemy = Enemy(4251, 1664, 30)
             self.enemy_list.append(enemy)
 
-            enemy = Enemy(4918 ,1539, 100)
+            enemy = Enemy(4918, 1539, 100)
             self.enemy_list.append(enemy)
 
             enemy = Enemy(5912, 1539, 100)
@@ -280,36 +291,39 @@ class MyGame(arcade.Window):
             enemy = Enemy(6746, 1664, 100)
             self.enemy_list.append(enemy)
 
-            enemy = Enemy(7583 ,1728, 100)
+            enemy = Enemy(7583, 1728, 100)
             self.enemy_list.append(enemy)
 
-            self.background = arcade.load_texture("new back.png")
-            self.player_sprite.center_x = 930 
+            self.background = arcade.load_texture("level 2 background.png")
+            self.player_sprite.center_x = 930
             self.player_sprite.center_y = 1200
 
         self.Foreground = arcade.load_texture("Foreground.png")
-        
+
         self.logo = arcade.load_texture("assets/LOGO.png")
 
         self.physics_engine = arcade.PhysicsEnginePlatformer(self.player_sprite,
-                                                        self.wall_list,
-                                                        GRAVITY)
+                                                             self.wall_list,
+                                                             GRAVITY)
+
     def on_draw(self):
         '''draws the map and entities'''
         arcade.start_render()
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0]-200, self.get_viewport()[2], 1650, SCREEN_HEIGHT, self.background)
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[
+                                            2], SCREEN_WIDTH, SCREEN_HEIGHT, self.background)
         arcade.draw_lrwh_rectangle_textured(1181, 1077, 400, 500, self.logo)
+
         self.wall_list.draw()
         self.enemy_list.draw()
         self.player_list.draw()
         self.bullet_list.draw()
         self.explosions_list.draw()
         self.win_list.draw()
-        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[2] ,1280, 960
-    , self.Foreground)
+        arcade.draw_lrwh_rectangle_textured(self.get_viewport()[0], self.get_viewport()[
+                                            2], 1280, 960, self.Foreground)
 
     def process_keychange(self):
-        
+
         if self.up_pressed and not self.down_pressed:
             if (
                 self.physics_engine.can_jump(y_distance=10)
@@ -320,7 +334,7 @@ class MyGame(arcade.Window):
 
             # Process left/right
         if self.right_pressed and not self.left_pressed:
-           self.player_sprite.change_x = MOVEMENT_SPEED
+            self.player_sprite.change_x = MOVEMENT_SPEED
         elif self.left_pressed and not self.right_pressed:
             self.player_sprite.change_x = -MOVEMENT_SPEED
         else:
@@ -337,7 +351,7 @@ class MyGame(arcade.Window):
             bullet = arcade.Sprite("Bullet.png", SPRITE_SCALING_BULLET)
             # Give the bullet a speed
             if self.player_sprite.character_face_direction == RIGHT_FACING:
-                bullet.change_x = BULLET_SPEED 
+                bullet.change_x = BULLET_SPEED
                 bullet.angle = 0
                 bullet.center_x = self.player_sprite.center_x+30
                 bullet.bottom = self.player_sprite.center_y-15
@@ -349,7 +363,7 @@ class MyGame(arcade.Window):
             # Add the bullet to the appropriate lists
             self.bullet_list.append(bullet)
         self.process_keychange()
-       
+
     def on_key_release(self, key, modifiers):
         if key == arcade.key.SPACE:
             self.up_pressed = False
@@ -358,19 +372,19 @@ class MyGame(arcade.Window):
             self.left_pressed = False
         elif key == arcade.key.D:
             self.right_pressed = False
+        elif key == arcade.key.ESCAPE:
+            ESCAPE = True
         self.process_keychange()
-
 
     def on_mouse_press(self, x, y, button, modifiers):
         map_mouse_x = self.get_viewport()[0] + x
         map_mouse_y = self.get_viewport()[2] + y
         print(f'{map_mouse_x = } {map_mouse_y = } ')
 
-
-
     def update(self, delta_time):
         '''updates time and checks for collisions'''
-        self.set_viewport(self.player_sprite.center_x - SCREEN_WIDTH/2, self.player_sprite.center_x + SCREEN_WIDTH/2, self.player_sprite.center_y - SCREEN_HEIGHT/2, self.player_sprite.center_y + SCREEN_HEIGHT/2)
+        self.set_viewport(self.player_sprite.center_x - SCREEN_WIDTH/2, self.player_sprite.center_x + SCREEN_WIDTH/2,
+                          self.player_sprite.center_y - SCREEN_HEIGHT/2, self.player_sprite.center_y + SCREEN_HEIGHT/2)
         self.player_sprite.update(delta_time)
         self.bullet_list.update()
         self.physics_engine.update()
@@ -378,15 +392,16 @@ class MyGame(arcade.Window):
         self.explosions_list.update()
         if self.player_sprite.center_y <= 400:
             self.setup(self.level)
-
-
-        enemy_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.enemy_list)
+            arcade.draw_text("Game over",self.player_sprite.center_x, self.player_sprite.center_y,arcade.color.WHITE,50)
+        enemy_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.enemy_list)
         for enemy in enemy_hit_list:
             if enemy_hit_list:
                 self.setup(self.level)
 
         for bullet in self.bullet_list:
-            hit_list = arcade.check_for_collision_with_list(bullet, self.enemy_list)
+            hit_list = arcade.check_for_collision_with_list(
+                bullet, self.enemy_list)
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
             for enemy in hit_list:
@@ -396,13 +411,15 @@ class MyGame(arcade.Window):
                     self.explosions_list.append(particle)
                 enemy.remove_from_sprite_lists()
         for bullet in self.bullet_list:
-            hit_list = arcade.check_for_collision_with_list(bullet, self.wall_list)
+            hit_list = arcade.check_for_collision_with_list(
+                bullet, self.wall_list)
             if len(hit_list) > 0:
                 bullet.remove_from_sprite_lists()
-            if bullet.center_x > self.get_viewport()[0] + SCREEN_WIDTH :
+            if bullet.center_x > self.get_viewport()[0] + SCREEN_WIDTH:
                 bullet.remove_from_sprite_lists()
 
-        win_hit_list = arcade.check_for_collision_with_list(self.player_sprite, self.win_list)
+        win_hit_list = arcade.check_for_collision_with_list(
+            self.player_sprite, self.win_list)
         for win in win_hit_list:
 
             if win_hit_list:
