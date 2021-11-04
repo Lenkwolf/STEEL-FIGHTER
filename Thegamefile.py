@@ -238,24 +238,52 @@ class MyGame(arcade.Window):
         self.enemy_list = arcade.SpriteList()
         self.bullet_list = arcade.SpriteList()
         self.explosions_list = arcade.SpriteList()
-        enemy = Enemy(3714, 1280, 100)
-        self.enemy_list.append(enemy)
+        if level == 1:
+            enemy = Enemy(3714, 1280, 100)
+            self.enemy_list.append(enemy)
 
-        enemy = Enemy(4667, 1406, 70)
-        self.enemy_list.append(enemy)
+            enemy = Enemy(4667, 1406, 70)
+            self.enemy_list.append(enemy)
 
-        enemy = Enemy(4250, 1727, 40)
-        self.enemy_list.append(enemy)
+            enemy = Enemy(4250, 1727, 40)
+            self.enemy_list.append(enemy)
 
-        enemy = Enemy(7230, 2045, 100)
-        self.enemy_list.append(enemy)
+            enemy = Enemy(7230, 2045, 100)
+            self.enemy_list.append(enemy)
 
-        enemy = Enemy(7230, 1790, 150)
-        self.enemy_list.append(enemy)
-        win = Win(8926, 2151)
-        self.win_list.append(win)
+            enemy = Enemy(7230, 1790, 150)
+            self.enemy_list.append(enemy)
+            win = Win(8926, 2151)
+            self.win_list.append(win)
+            self.background = arcade.load_texture("background.png")
+        if level == 2:
+            enemy = Enemy(2624, 1408, 100)
+            self.enemy_list.append(enemy)
 
-        self.background = arcade.load_texture("background.png")
+            enemy = Enemy(2111, 1282, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(3262, 1664, 100)
+            self.enemy_list.append(enemy)
+            
+            enemy = Enemy(4251, 1664, 30)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(4918 ,1539, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(5912, 1539, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(6746, 1664, 100)
+            self.enemy_list.append(enemy)
+
+            enemy = Enemy(7583 ,1728, 100)
+            self.enemy_list.append(enemy)
+
+            self.background = arcade.load_texture("new back.png")
+            self.player_sprite.center_x = 930 
+            self.player_sprite.center_y = 1200
 
         self.Foreground = arcade.load_texture("Foreground.png")
         
@@ -380,11 +408,7 @@ class MyGame(arcade.Window):
             if win_hit_list:
                 self.level += 1
                 self.setup(self.level)
-                if self.level == 2:
-                    self.win_list[0].center_x = 8295
-                    self.win_list[0].center_y = 4752
-                    self.player_sprite.center_x = 930 
-                    self.player_sprite.center_y = 1200
+
 
 def main():
     window = MyGame()
